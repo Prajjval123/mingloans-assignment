@@ -9,8 +9,8 @@ import {
 import HomePage from "./components/HomePage";
 import LoginForm from "./components/LoginForm";
 import Dashboard from "./components/Dashboard";
-import AddProduct from './components/AddProduct';
-
+import AddProduct from "./components/AddProduct";
+import ProductList from "./components/ProductList";
 
 const App = () => {
   const [user, setUser] = React.useState(null); // To manage logged-in user state
@@ -26,7 +26,8 @@ const App = () => {
         path="/dashboard"
         element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
       />
-	  <Route path="/add-product" element={<AddProduct />} />
+      <Route path="/add-product" element={<AddProduct />} />
+      <Route path="/products" element={<ProductList />} />
     </Routes>
   );
 };

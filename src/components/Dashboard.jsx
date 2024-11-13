@@ -55,9 +55,12 @@ const Dashboard = ({ user }) => {
               >
                 Add New Product
               </Link>
-              <button className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                View Products
-              </button>
+              <Link
+          to="/products"
+          className="w-full py-3 mt-4 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 text-center block"
+        >
+          View Products
+        </Link>
             </div>
           </div>
         </div>
