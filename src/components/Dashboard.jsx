@@ -1,5 +1,5 @@
-// src/components/Dashboard.jsx
-import React from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = ({ user }) => {
   return (
@@ -14,7 +14,9 @@ const Dashboard = ({ user }) => {
               alt="User Avatar"
               className="w-10 h-10 rounded-full border-2 border-white"
             />
-            <span className="hidden sm:block font-medium">{user?.firstName} {user?.lastName}</span>
+            <span className="hidden sm:block font-medium">
+              {user?.firstName} {user?.lastName}
+            </span>
           </div>
         </div>
       </header>
@@ -29,7 +31,9 @@ const Dashboard = ({ user }) => {
           {/* Card 1: Profile */}
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold mb-2">Your Profile</h3>
-            <p className="text-gray-600">Name: {user?.firstName} {user?.lastName}</p>
+            <p className="text-gray-600">
+              Name: {user?.firstName} {user?.lastName}
+            </p>
             <p className="text-gray-600">Email: {user?.email}</p>
           </div>
 
@@ -41,11 +45,16 @@ const Dashboard = ({ user }) => {
 
           {/* Card 3: Actions */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold mb-2">Quick Actions</h3>
+            <h3 className="text-xl font-semibold mb-2">
+              Quick Actions
+            </h3>
             <div className="space-y-2">
-              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <Link
+                to="/add-product"
+                className="w-full py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-center block"
+              >
                 Add New Product
-              </button>
+              </Link>
               <button className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                 View Products
               </button>

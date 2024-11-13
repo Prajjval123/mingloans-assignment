@@ -1,176 +1,192 @@
 import React, { useState } from "react";
 
 const AddProduct = () => {
-  const [product, setProduct] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
     price: "",
+    discountPercentage: "",
     stock: "",
     brand: "",
     weight: "",
     warrantyInformation: "",
     shippingInformation: "",
+    availabilityStatus: "",
+    returnPolicy: "",
   });
+  const [categories, setCategories] = useState([
+    "smartphones",
+    "laptops",
+    "fragrances",
+    "groceries",
+    "skincare",
+  ]); // Replace with fetched categories if needed
   const [successMessage, setSuccessMessage] = useState("");
-  const [categories, setCategories] = useState([]);
 
-  // Fetch product categories
-  React.useEffect(() => {
-    fetch("https://dummyjson.com/products/categories")
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Simple validation
+    if (!formData.title || !formData.price || !formData.category) {
+      alert("Title, Price, and Category are required.");
+      return;
+    }
+
     try {
       const response = await fetch("https://dummyjson.com/products/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-      const data = await response.json();
 
+      const result = await response.json();
       if (response.ok) {
         setSuccessMessage("Product added successfully!");
-        localStorage.setItem(
-          "newProducts",
-          JSON.stringify([
-            ...(JSON.parse(localStorage.getItem("newProducts")) || []),
-            data,
-          ])
-        );
-        setProduct({
-          title: "",
-          description: "",
-          category: "",
-          price: "",
-          stock: "",
-          brand: "",
-          weight: "",
-          warrantyInformation: "",
-          shippingInformation: "",
-        });
+        saveToLocalStorage(result);
       } else {
-        console.error("Failed to add product:", data);
+        alert(`Error: ${result.message}`);
       }
     } catch (error) {
-      console.error("Error:", error);
+      alert(`Error: ${error.message}`);
     }
   };
 
-  // Handle input changes
-  const handleChange = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
+  const saveToLocalStorage = (product) => {
+    const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
+    savedProducts.push(product);
+    localStorage.setItem("products", JSON.stringify(savedProducts));
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
-      {successMessage && (
-        <div className="p-4 mb-4 text-green-700 bg-green-100 rounded">
-          {successMessage}
-        </div>
-      )}
+    <div className="add-product-container bg-gray-100 min-h-screen p-4">
+      <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+
       <form
+        className="bg-white shadow-md rounded-lg p-6 space-y-4"
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2"
       >
-        <input
-          type="text"
-          name="title"
-          value={product.title}
-          onChange={handleChange}
-          placeholder="Product Title"
-          required
-          className="p-2 border rounded"
-        />
-        <textarea
-          name="description"
-          value={product.description}
-          onChange={handleChange}
-          placeholder="Product Description"
-          required
-          className="p-2 border rounded"
-        />
-        <select
-          name="category"
-          value={product.category}
-          onChange={handleChange}
-          required
-          className="p-2 border rounded"
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          name="price"
-          value={product.price}
-          onChange={handleChange}
-          placeholder="Price"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="number"
-          name="stock"
-          value={product.stock}
-          onChange={handleChange}
-          placeholder="Stock Quantity"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="brand"
-          value={product.brand}
-          onChange={handleChange}
-          placeholder="Brand"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="number"
-          name="weight"
-          value={product.weight}
-          onChange={handleChange}
-          placeholder="Weight (kg)"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="warrantyInformation"
-          value={product.warrantyInformation}
-          onChange={handleChange}
-          placeholder="Warranty Information"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="shippingInformation"
-          value={product.shippingInformation}
-          onChange={handleChange}
-          placeholder="Shipping Information"
-          required
-          className="p-2 border rounded"
-        />
+        <div>
+          <label className="block font-medium mb-1" htmlFor="title">
+            Product Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="description">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          ></textarea>
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="category">
+            Category
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select a Category</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="price">
+            Price
+          </label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="discountPercentage">
+            Discount Percentage
+          </label>
+          <input
+            type="number"
+            id="discountPercentage"
+            name="discountPercentage"
+            value={formData.discountPercentage}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="stock">
+            Stock
+          </label>
+          <input
+            type="number"
+            id="stock"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1" htmlFor="brand">
+            Brand
+          </label>
+          <input
+            type="text"
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
         <button
           type="submit"
-          className="col-span-2 p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
         >
           Add Product
         </button>
       </form>
+
+      {successMessage && (
+        <div className="mt-4 text-green-500 font-bold">{successMessage}</div>
+      )}
     </div>
   );
 };
