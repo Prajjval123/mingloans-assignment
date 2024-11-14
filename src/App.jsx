@@ -7,9 +7,9 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ProductProvider } from "./context/ProductContext";
-import HomePage from "./components/HomePage";
+import HomePage from "./pages/HomePage";
 import LoginForm from "./components/LoginForm";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import AddProduct from "./components/AddProduct";
 import ProductList from "./components/ProductList";
 import EditProduct from "./components/EditProduct";

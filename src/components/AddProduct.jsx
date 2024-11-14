@@ -21,7 +21,7 @@ const AddProduct = () => {
       formData.append("file", file);
       formData.append("upload_preset", "jlabderz"); // Get this from Cloudinary
 
-      fetch("https://api.cloudinary.com/v1_1/dvtibz63f/image/upload", {
+      fetch(import.meta.env.VITE_CLOUDINARY_URL, {
         method: "POST",
         body: formData,
       })
