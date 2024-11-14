@@ -8,7 +8,6 @@ const ViewProduct = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    // Fetch product by ID from the products context or fetch it if not in context
     const foundProduct = products.find(
       (product) => product.id === parseInt(id)
     );

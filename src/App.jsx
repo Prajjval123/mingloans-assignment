@@ -1,36 +1,21 @@
-// src/App.jsx
 import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
-import { ProductProvider } from "./context/ProductContext";
+import { ProductProvider, useProductContext } from "./context/ProductContext";
 import HomePage from "./pages/HomePage";
-import LoginForm from "./components/LoginForm";
+import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import AddProduct from "./components/AddProduct";
 import ProductList from "./components/ProductList";
 import EditProduct from "./components/EditProduct";
 import ViewProduct from "./components/ViewProduct";
 import ReportPage from "./components/ReportPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
-  const [user, setUser] = React.useState(null); // To manage logged-in user state
-
-  const updateProduct = async (id, updatedProduct) => {
-    return fetch(`/api/products/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedProduct),
-    })
-      .then((response) => response.json())
-      .catch((error) => console.error("Error updating product:", error));
-  };
-
   return (
     <ProductProvider>
       <Routes>
@@ -38,18 +23,57 @@ const App = () => {
         <Route
           path="/login"
           element={
-            <LoginForm onLoginSuccess={(userData) => setUser(userData)} />
+            <LoginPage onLoginSuccess={(userData) => setUser(userData)} />
           }
         />
         <Route
           path="/dashboard"
-          element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/add-product" element={<AddProduct />} />
-        <Route path="/products" element={<ProductList />} />
-        <Route path="/edit/:id" element={<EditProduct />} />
-        <Route path="/view-product/:id" element={<ViewProduct />} />
-        <Route path="/report-page" element={<ReportPage />} />
+        <Route
+          path="/product/add"
+          element={
+            <ProtectedRoute>
+              <AddProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <ProductList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-product/:id"
+          element={
+            <ProtectedRoute>
+              <ViewProduct />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/report-page"
+          element={
+            <ProtectedRoute>
+              <ReportPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </ProductProvider>
   );

@@ -1,43 +1,39 @@
-// src/components/LoginForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useProductContext } from "../context/ProductContext";
+import { loginUser } from "../services/authService"; 
 
-const LoginForm = ({ onLoginSuccess }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Using useNavigate for navigation
+  const {user,setUser} = useProductContext();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!email || !password) {
       setError("Please enter both email and password");
       return;
     }
-
+  
     try {
-      const response = await fetch("https://dummyjson.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: email, password: password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        onLoginSuccess(data); // Pass user data to App state
-        navigate("/dashboard"); // Use navigate to redirect to Dashboard
-      } else {
-        setError(data.message || "Invalid email or password");
-      }
+      const userData = { username: email, password: password };
+      const data = await loginUser(userData);
+      localStorage.setItem("authToken", data.accessToken);
+      console.log(data)
+      setUser(data)
+      navigate("/dashboard");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError(err.message);
+      console.error(err);
     }
   };
+  
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
       <div className="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Login
@@ -76,4 +72,4 @@ const LoginForm = ({ onLoginSuccess }) => {
   );
 };
 
-export default LoginForm;
+export default LoginPage;

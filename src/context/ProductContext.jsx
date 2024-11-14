@@ -5,13 +5,14 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [showNewProducts, setShowNewProducts] = useState(false);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     const storedProducts = JSON.parse(localStorage.getItem("products"));
+
     if (storedProducts && storedProducts.length > 0) {
       setProducts(storedProducts);
     } else {
-      // Fetch initial product data
       fetch("https://dummyjson.com/products")
         .then((res) => res.json())
         .then((data) => setProducts(data.products))
@@ -44,7 +45,7 @@ export const ProductProvider = ({ children }) => {
 
   const setView = (showNew) => {
     setShowNewProducts(showNew);
-    console.log(showNewProducts) // Toggle view based on newly added or all products
+    console.log(showNewProducts);
   };
 
   return (
@@ -52,11 +53,13 @@ export const ProductProvider = ({ children }) => {
       value={{
         products,
         showNewProducts,
+        user,
         setProducts,
         updateProduct,
         addProduct,
         deleteProduct,
         setView,
+        setUser
       }}
     >
       {children}

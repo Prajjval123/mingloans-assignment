@@ -1,25 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useProductContext } from "../context/ProductContext";
 
 const AddProduct = () => {
   const { addProduct, products } = useProductContext();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(""); // Store the selected category
+  const [category, setCategory] = useState(""); 
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [isNew, setIsNew] = useState(true);
+  const [user, setUser] = useState(null);
 
-  // Example categories - You can expand this as needed
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      const fetchUserData = async () => {
+        const userInfo = JSON.parse(localStorage.getItem("user"));
+        setUser(userInfo);
+      };
+      fetchUserData();
+    }
+  }, []);
+
   const categories = ["Electronics", "Fashion", "Home", "Books", "Toys"];
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // You can use the Cloudinary API to upload the image
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "jlabderz"); // Get this from Cloudinary
+      formData.append("upload_preset", "jlabderz"); 
 
       fetch(import.meta.env.VITE_CLOUDINARY_URL, {
         method: "POST",
@@ -28,17 +38,15 @@ const AddProduct = () => {
         .then((res) => res.json())
         .then((data) => {
           setThumbnail(data.secure_url);
-           // Cloudinary gives back a secure URL for the image
         })
         .catch((err) => console.error("Error uploading image:", err));
     }
-    console.log(thumbnail)
+    console.log(thumbnail);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if the category is selected
     if (!category) {
       alert("Please select a category!");
       return;
@@ -57,7 +65,7 @@ const AddProduct = () => {
     addProduct(newProduct);
 
     alert("Product added successfully!");
-    console.log(products)
+    console.log(products);
 
     // Reset form
     setTitle("");

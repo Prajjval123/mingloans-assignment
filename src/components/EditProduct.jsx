@@ -5,7 +5,7 @@ import { useProductContext } from "../context/ProductContext";
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, updateProduct } = useProductContext(); // Access products and updateProduct from context
+  const { products, updateProduct } = useProductContext(); 
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -41,7 +41,7 @@ const EditProduct = () => {
 
       if (response.ok) {
         const updatedProduct = await response.json();
-        updateProduct(updatedProduct); // Update the product in context
+        updateProduct(updatedProduct);
         alert("Product updated successfully!");
         navigate("/products");
       } else {
