@@ -1,117 +1,94 @@
 import React, { useState } from "react";
+import { useProductContext } from "../context/ProductContext";
 
 const AddProduct = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    price: "",
-    discountPercentage: "",
-    stock: "",
-    brand: "",
-    weight: "",
-    warrantyInformation: "",
-    shippingInformation: "",
-    availabilityStatus: "",
-    returnPolicy: "",
-  });
-  const [categories, setCategories] = useState([
-    "smartphones",
-    "laptops",
-    "fragrances",
-    "groceries",
-    "skincare",
-  ]); // Replace with fetched categories if needed
-  const [successMessage, setSuccessMessage] = useState("");
+  const { addProduct, products } = useProductContext();
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState(""); // Store the selected category
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [isNew, setIsNew] = useState(true);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Example categories - You can expand this as needed
+  const categories = ["Electronics", "Fashion", "Home", "Books", "Toys"];
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // You can use the Cloudinary API to upload the image
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "jlabderz"); // Get this from Cloudinary
+
+      fetch("https://api.cloudinary.com/v1_1/dvtibz63f/image/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setThumbnail(data.secure_url);
+           // Cloudinary gives back a secure URL for the image
+        })
+        .catch((err) => console.error("Error uploading image:", err));
+    }
+    console.log(thumbnail)
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simple validation
-    if (!formData.title || !formData.price || !formData.category) {
-      alert("Title, Price, and Category are required.");
+    // Check if the category is selected
+    if (!category) {
+      alert("Please select a category!");
       return;
     }
 
-    try {
-      const response = await fetch("https://dummyjson.com/products/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    const newProduct = {
+      id: Date.now(),
+      title,
+      category,
+      price: parseFloat(price),
+      description,
+      thumbnail,
+      isNew,
+    };
 
-      const result = await response.json();
-      if (response.ok) {
-        setSuccessMessage("Product added successfully!");
-        saveToLocalStorage(result);
-      } else {
-        alert(`Error: ${result.message}`);
-      }
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    }
-  };
+    addProduct(newProduct);
 
-  const saveToLocalStorage = (product) => {
-    const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
-    savedProducts.push(product);
-    localStorage.setItem("products", JSON.stringify(savedProducts));
+    alert("Product added successfully!");
+    console.log(products)
+
+    // Reset form
+    setTitle("");
+    setCategory("");
+    setPrice("");
+    setDescription("");
+    setThumbnail("");
+    setIsNew(true);
   };
 
   return (
-    <div className="add-product-container bg-gray-100 min-h-screen p-4">
-      <h2 className="text-xl font-bold mb-4">Add New Product</h2>
-
-      <form
-        className="bg-white shadow-md rounded-lg p-6 space-y-4"
-        onSubmit={handleSubmit}
-      >
-        <div>
-          <label className="block font-medium mb-1" htmlFor="title">
-            Product Title
-          </label>
+    <div className="p-6 max-w-md mx-auto bg-white shadow-lg rounded-lg">
+      <h2 className="text-xl font-semibold mb-4">Add New Product</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-gray-700">Title</label>
           <input
             type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full p-2 border rounded"
           />
         </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="description">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          ></textarea>
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="category">
-            Category
-          </label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Category</label>
           <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             className="w-full p-2 border rounded"
           >
-            <option value="">Select a Category</option>
+            <option value="">Select Category</option>
             {categories.map((cat, index) => (
               <option key={index} value={cat}>
                 {cat}
@@ -119,74 +96,43 @@ const AddProduct = () => {
             ))}
           </select>
         </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="price">
-            Price
-          </label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Price</label>
           <input
             type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             className="w-full p-2 border rounded"
           />
         </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="discountPercentage">
-            Discount Percentage
-          </label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-2 border rounded"
+          ></textarea>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Thumbnail Image</label>
           <input
-            type="number"
-            id="discountPercentage"
-            name="discountPercentage"
-            value={formData.discountPercentage}
-            onChange={handleChange}
+            type="file"
+            onChange={handleImageUpload}
             className="w-full p-2 border rounded"
           />
         </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="stock">
-            Stock
-          </label>
+        <div className="mb-4">
+          <label className="block text-gray-700">Is New?</label>
           <input
-            type="number"
-            id="stock"
-            name="stock"
-            value={formData.stock}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
+            type="checkbox"
+            checked={isNew}
+            onChange={(e) => setIsNew(e.target.checked)}
           />
         </div>
-
-        <div>
-          <label className="block font-medium mb-1" htmlFor="brand">
-            Brand
-          </label>
-          <input
-            type="text"
-            id="brand"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
           Add Product
         </button>
       </form>
-
-      {successMessage && (
-        <div className="mt-4 text-green-500 font-bold">{successMessage}</div>
-      )}
     </div>
   );
 };

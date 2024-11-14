@@ -6,7 +6,7 @@ const LoginForm = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Using useNavigate for navigation
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ const LoginForm = ({ onLoginSuccess }) => {
 
       if (response.ok) {
         onLoginSuccess(data); // Pass user data to App state
-        navigate("/dashboard"); // Redirect to Dashboard
+        navigate("/dashboard"); // Use navigate to redirect to Dashboard
       } else {
         setError(data.message || "Invalid email or password");
       }

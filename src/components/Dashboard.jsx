@@ -45,9 +45,7 @@ const Dashboard = ({ user }) => {
 
           {/* Card 3: Actions */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Quick Actions
-            </h3>
+            <h3 className="text-xl font-semibold mb-2">Quick Actions</h3>
             <div className="space-y-2">
               <Link
                 to="/add-product"
@@ -56,11 +54,17 @@ const Dashboard = ({ user }) => {
                 Add New Product
               </Link>
               <Link
-          to="/products"
-          className="w-full py-3 mt-4 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 text-center block"
-        >
-          View Products
-        </Link>
+                to="/products"
+                className="w-full py-3 mt-4 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 text-center block"
+              >
+                View Products
+              </Link>
+              <Link
+                to="/report-page"
+                className="w-full py-3 mt-4 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 text-center block"
+              >
+                Report Page
+              </Link>
             </div>
           </div>
         </div>
