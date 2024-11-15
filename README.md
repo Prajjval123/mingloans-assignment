@@ -1,4 +1,4 @@
-React Product Management App
+# React Product Management App
 Hi! This is my first React project! 🎉
 It’s a simple app for managing products, like adding and viewing them.
 I’m still learning, so please bear with any mistakes. 😅
@@ -16,13 +16,17 @@ React Router Dom (for page navigation).
 How to Run
 
 Clone the repository:
-`git clone https://github.com/yourusername/react-product-app.git`
+
+    `git clone https://github.com/yourusername/react-product-app.git`
  
 Install dependencies:
-`npm install`
+
+    `npm install`
 
 Start the app:
+
 `npm start`
+
 Open in your browser: http://localhost:3000.
 
 Known Issues
