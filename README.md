@@ -19,7 +19,7 @@ git clone https://github.com/yourusername/react-product-app.git
 Install dependencies:
 bash
 Copy code
-npm install  
+  `npm install`  
 Start the app:
 bash
 Copy code
