@@ -4,7 +4,7 @@ import { useProductContext } from "../context/ProductContext";
 const AddProduct = () => {
   const { addProduct, products } = useProductContext();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(""); 
+  const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
@@ -29,7 +29,7 @@ const AddProduct = () => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", "jlabderz"); 
+      formData.append("upload_preset", "jlabderz");
 
       fetch(import.meta.env.VITE_CLOUDINARY_URL, {
         method: "POST",
@@ -41,7 +41,6 @@ const AddProduct = () => {
         })
         .catch((err) => console.error("Error uploading image:", err));
     }
-    console.log(thumbnail);
   };
 
   const handleSubmit = (e) => {
@@ -49,6 +48,11 @@ const AddProduct = () => {
 
     if (!category) {
       alert("Please select a category!");
+      return;
+    }
+
+    if (!thumbnail) {
+      alert("Please wait for the image to finish uploading!");
       return;
     }
 
@@ -65,7 +69,10 @@ const AddProduct = () => {
     addProduct(newProduct);
 
     alert("Product added successfully!");
-    console.log(products);
+    
+    setTimeout(() => {
+      console.log(products);
+    }, 4000);
 
     // Reset form
     setTitle("");
